@@ -1,8 +1,3 @@
-list1 = []
-list2 = []
-safes = 0
-
-
 def is_valid(values):
     if values[0] == values[1]:
         return False
@@ -32,6 +27,7 @@ def is_safe(line):
 
 
 with open('input.txt') as file:
+    safes = 0
     for line in file:
         if is_safe(line):
             safes += 1

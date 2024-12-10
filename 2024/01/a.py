@@ -1,8 +1,7 @@
-list1 = []
-list2 = []
-data = []
-
 with open('input.txt') as file:
+    list1 = []
+    list2 = []
+    data = []
     for line in file:
         x = line.split()
         list1.append(int(x[0]))

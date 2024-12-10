@@ -1,8 +1,3 @@
-list1 = []
-list2 = []
-safes = 0
-
-
 def is_safe(line):
     values = line.split()
     if values[0] == values[1]:
@@ -22,6 +17,7 @@ def is_safe(line):
 
 
 with open('input.txt') as file:
+    safes = 0
     for line in file:
         if is_safe(line):
             safes += 1
