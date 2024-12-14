@@ -7,6 +7,7 @@ class AoCY2024D06:
         self.block_char = '#'
         self.free_char = '.'
         self.start_char = '^'
+        self.start_dir = 'N'
         self.start_x, self.start_y = self.get_start()
         self.steps = {
             'N': (0, -1, 'E'),
@@ -39,7 +40,7 @@ class AoCY2024D06:
         return x, y, direction
 
     def get_part1(self):
-        direction = 'N'
+        direction = self.start_dir
         x = self.start_x
         y = self.start_y
         visited = {f"{x},{y}"}
@@ -54,7 +55,7 @@ class AoCY2024D06:
         return len(visited)
 
     def test_path(self):
-        direction = 'N'
+        direction = self.start_dir
         x = self.start_x
         y = self.start_y
         corners = ''
@@ -69,10 +70,8 @@ class AoCY2024D06:
             if direction != val[2]:
                 lasts.append(pos)
                 corners += f"|{pos}"
-                if len(lasts) > 3:
-                    changes = '|'.join(lasts)
-                    if changes in corners:
-                        print(changes, corners)
+                if len(lasts) >= 2:
+                    if corners.count('|'.join(lasts)) >= 2:
                         return True
                     lasts.pop(0)
             direction = val[2]
