@@ -7,7 +7,7 @@ class AoCY2024D08:
         self.input = self.get_input()
         self.limit_y = len(self.input)
         self.limit_x = len(self.input[0])
-        self.antennas = []
+        self.antennas = set()
         self.antinodes = set()
 
     def get_input(self):
@@ -20,7 +20,7 @@ class AoCY2024D08:
         if an_x >= 0 and an_x < self.limit_x and an_y >= 0 and an_y < self.limit_y:
             self.antinodes.add(f'{an_x},{an_y}')
             if extended:
-                self.set_antinode(an_x, an_y, dist_x, dist_y, extended)
+                self.set_antinode(an_x, an_y, dist_x, dist_y, up, extended)
 
     def find_pairs(self, char, x1, y1, extended=False):
         for y2 in range(y1, self.limit_y):
@@ -32,12 +32,12 @@ class AoCY2024D08:
                     self.set_antinode(x2, y2, dist_x, dist_y, False, extended)
 
     def scan_map(self, extended):
-        self.antennas = []
+        self.antennas = set()
         self.antinodes = set()
         for y, row in enumerate(self.input):
             for x, char in enumerate(row):
                 if re.match(r'[0-9a-zA-Z]', char):
-                    self.antennas.append(char)
+                    self.antennas.add(f'{x},{y}')
                     self.find_pairs(char, x, y, extended)
 
     def get_part1(self):
@@ -46,7 +46,8 @@ class AoCY2024D08:
 
     def get_part2(self):
         self.scan_map(True)
-        return len(self.antinodes) + len(self.antennas)
+        total = self.antinodes.union(self.antennas)
+        return len(total)
 
 
 aoc = AoCY2024D08()
