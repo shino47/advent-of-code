@@ -11,14 +11,9 @@ class AoCY2024D09:
         items = []
         n = 0
         for i, num in enumerate(self.input):
-            if 0 == num:
-                continue
             is_pair = i % 2 == 0
-            char = n if is_pair else '.'
-            items.append({
-                'value': char,
-                'qty': num,
-            })
+            char = n if is_pair else None
+            items.append((char, num))
             if is_pair:
                 n += 1
         return items
@@ -26,64 +21,55 @@ class AoCY2024D09:
     def get_flat_data(self, values):
         flat = []
         for item in values:
-            flat += item['qty'] * [item['value']]
+            flat += item[1] * [item[0]]
         return flat
 
     def get_checksum(self, values):
         total = 0
         for i, val in enumerate(values):
-            if '.' != val:
+            if val is not None:
                 total += i * val
         return total
 
     def get_last_digit(self, values):
-        for i, val in reversed(list(enumerate(values))):
-            if '.' != val:
-                return i, val
-        return None, None
+        try:
+            idx = len(values) - 1 - next(i for i, x in enumerate(reversed(values)) if x is not None)
+            return idx
+        except StopIteration:
+            return None
 
     def get_reorder_by_item(self, values):
         for i, val in enumerate(values):
-            if '.' != val:
+            if val is not None:
                 continue
-            x, num = self.get_last_digit(values)
+            x = self.get_last_digit(values)
             if x is None or x <= i:
-                continue
-            values[i] = num
-            values[x] = val
+                break
+            values[i], values[x] = values[x], values[i]
         return values
 
     def get_first_free_index_of_size(self, values, idx, size):
         for i in range(len(values)):
             if i >= idx:
                 break
-            if '.' == values[i]['value'] and values[i]['qty'] >= size:
+            if values[i][0] is None and values[i][1] >= size:
                 return i
         return None
 
     def move_block(self, values, idx_cur, idx_free):
-        value = values[idx_cur]['value']
-        qty = values[idx_cur]['qty']
-        remain_qty = values[idx_free]['qty'] - qty
-        values[idx_free] = {
-            'value': value,
-            'qty': qty,
-        }
-        values[idx_cur] = {
-            'value': '.',
-            'qty': qty,
-        }
+        value = values[idx_cur][0]
+        qty = values[idx_cur][1]
+        remain_qty = values[idx_free][1] - qty
+        values[idx_free] = (value, qty)
+        values[idx_cur] = (None, qty)
         if remain_qty > 0:
-            values.insert(idx_free + 1, {
-                'value': '.',
-                'qty': remain_qty,
-            })
+            values.insert(idx_free + 1, (None, remain_qty))
 
     def get_reorder_by_block(self, values):
         for i in range(len(values) - 1, -1, -1):
-            if '.' == values[i]['value']:
+            if values[i][0] is None:
                 continue
-            idx = self.get_first_free_index_of_size(values, i, values[i]['qty'])
+            idx = self.get_first_free_index_of_size(values, i, values[i][1])
             if idx is not None:
                 self.move_block(values, i, idx)
         return values
