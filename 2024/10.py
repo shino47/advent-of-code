@@ -4,37 +4,53 @@ class AoCY2024D10:
         self.input = self.get_input()
         self.limit_y = len(self.input)
         self.limit_x = len(self.input[0])
+        self.paths = []
+        self.find_paths()
 
     def get_input(self):
         with open('inputs/10.txt') as file:
             return tuple(tuple(int(x) for x in line.strip()) for line in file)
 
-    def try_path(self, num, x, y):
+    def try_path(self, num, x, y, path=None):
+        if path is None:
+            path = []
+        else:
+            path = list(path)
+        path.append(f'{x},{y}')
+        if 9 == num:
+            self.paths.append(path)
+            return
         target = num + 1
-        total = 0
         if (x+1) < self.limit_x and self.input[y][x+1] == target:
-            total += self.try_path(target, x+1, y)
+            self.try_path(target, x+1, y, path)
         if (x-1) >= 0 and self.input[y][x-1] == target:
-            total += self.try_path(target, x-1, y)
+            self.try_path(target, x-1, y, path)
         if (y+1) < self.limit_y and self.input[y+1][x] == target:
-            total += self.try_path(target, x, y+1)
+            self.try_path(target, x, y+1, path)
         if (y-1) >= 0 and self.input[y-1][x] == target:
-            total += self.try_path(target, x, y-1)
-        return total
+            self.try_path(target, x, y-1, path)
 
-    def find_starts(self):
-        scores = 0
+    def find_paths(self):
         for y, row in enumerate(self.input):
             for x, num in enumerate(row):
                 if 0 == num:
-                    scores += self.try_path(num, x, y)
-        return scores
+                    self.try_path(num, x, y)
+
+    def get_unique_paths(self):
+        points = set()
+        uniq = []
+        for path in self.paths:
+            point = (path[0], path[-1])
+            if point not in points:
+                points.add(point)
+                uniq.append(path)
+        return uniq
 
     def get_part1(self):
-        return self.find_starts()
+        return len(self.get_unique_paths())
 
     def get_part2(self):
-        pass
+        return len(self.paths)
 
 
 aoc = AoCY2024D10()
