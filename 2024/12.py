@@ -5,6 +5,7 @@ class AoCY2024D12:
         self.limit_y = len(self.input)
         self.limit_x = len(self.input[0])
         self.marked = set()
+        self.regions = self.get_regions()
 
     def get_input(self):
         with open('inputs/12.txt') as file:
@@ -25,6 +26,16 @@ class AoCY2024D12:
             self.find_region(char, x, y-1, region)
         return region
 
+    def get_regions(self):
+        regions = []
+        for y, row in enumerate(self.input):
+            for x, char in enumerate(row):
+                if (x, y) in self.marked:
+                    continue
+                region = self.find_region(char, x, y)
+                regions.append((char, region))
+        return regions
+
     def get_perimeter(self, char, region):
         total = 0
         for x, y in region:
@@ -38,19 +49,25 @@ class AoCY2024D12:
                 total += 1
         return total
 
+    def get_sides(self, char, region):
+        total = 0
+        for x, y in region:
+            pass
+        return total
+
     def get_part1(self):
         total = 0
-        for y, row in enumerate(self.input):
-            for x, char in enumerate(row):
-                if (x, y) in self.marked:
-                    continue
-                region = self.find_region(char, x, y)
-                perimeter = self.get_perimeter(char, region)
-                total += perimeter * len(region)
+        for char, region in self.regions:
+            perimeter = self.get_perimeter(char, region)
+            total += perimeter * len(region)
         return total
 
     def get_part2(self):
-        pass
+        total = 0
+        for char, region in self.regions:
+            sides = self.get_sides(char, region)
+            total += sides * len(region)
+        return total
 
 
 aoc = AoCY2024D12()
