@@ -37,17 +37,17 @@ class AoCY2024D12:
         return regions
 
     def get_perimeter(self, char, region):
-        total = 0
+        perimeter = []
         for x, y in region:
             if (x+1) >= self.limit_x or self.input[y][x+1] != char:
-                total += 1
+                perimeter.append((x+1, y))
             if (x-1) < 0 or self.input[y][x-1] != char:
-                total += 1
+                perimeter.append((x-1, y))
             if (y+1) >= self.limit_y or self.input[y+1][x] != char:
-                total += 1
+                perimeter.append((x, y+1))
             if (y-1) < 0 or self.input[y-1][x] != char:
-                total += 1
-        return total
+                perimeter.append((x, y-1))
+        return perimeter
 
     def get_sides(self, char, region):
         total = 0
@@ -59,7 +59,7 @@ class AoCY2024D12:
         total = 0
         for char, region in self.regions:
             perimeter = self.get_perimeter(char, region)
-            total += perimeter * len(region)
+            total += len(perimeter) * len(region)
         return total
 
     def get_part2(self):
