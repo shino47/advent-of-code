@@ -51,7 +51,7 @@ class AoCY2024D12:
 
     def get_sides(self, char, region):
         total = 0
-        for x, y in region:
+        for x, y in self.get_perimeter(char, region):
             pass
         return total
 
